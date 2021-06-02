@@ -1,5 +1,4 @@
 import { CheckCircleIcon } from "@heroicons/react/solid";
-import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Header from "../components/Header";
 
