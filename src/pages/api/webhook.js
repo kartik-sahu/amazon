@@ -1,7 +1,8 @@
-import { buffer } from "micro"; // @todo: what's micro ? RTFM!
+import { buffer } from "micro"; 
 import * as admin from "firebase-admin";
 
-const serviceAccount = require("../../../permissions.json"); // Can't do an import here!
+
+const serviceAccount = require("../../../permissions.json");
 const app = !admin.apps.length
     ? admin.initializeApp({
           credential: admin.credential.cert(serviceAccount),
@@ -9,11 +10,15 @@ const app = !admin.apps.length
     : admin.app();
 
 // Etablish connection to Stripe
-const stripe = require("stripe")(process.env.stripe_secret_key);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = process.env.STRIPE_SIGNING_SECRET; // WHERE IS THIS?
 
 const fulfillOrder = async (session) => {
     console.log("Fulfilling order", session);
+    
+    const images = JSON.parse(session.metadata.images).map((image) =>
+        JSON.stringify(image)
+    );
 
     return app
         .firestore()
@@ -24,7 +29,7 @@ const fulfillOrder = async (session) => {
         .set({
             amount: session.amount_total / 100,
             amount_shipping: session.total_details.amount_shipping / 100,
-            images: JSON.parse(session.metadata.images),
+            images: images,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
         })
 
