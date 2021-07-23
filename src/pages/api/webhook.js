@@ -29,10 +29,8 @@ const fulfillOrder = async (session) => {
         })
 
 .then(() => {
-            console.log(
-                SUCCESS: Order ${session.id} had been added to the DB
-            );
-        });
+      console.log(`SUCCESS: Order ${session.id} had been added to the DB`);
+    });
 };
 export default async (req, res) => {
     if (req.method === "POST") {
@@ -52,7 +50,7 @@ export default async (req, res) => {
             );
         } catch (err) {
             console.log("ERROR", err.message);
-            return res.status(400).send(Webhook error: ${err.message});
+            return res.status(400).send(`Webhook error: ${err.message}`);
         }
 
         // Handle the checkout.session.completed event
@@ -63,7 +61,7 @@ export default async (req, res) => {
             return fulfillOrder(session)
                 .then(() => res.status(200))
                 .catch((err) =>
-                    res.status(400).send(Webhook Error: ${err.message})
+                    res.status(400).send(`Webhook Error: ${err.message}`)
                 );
         }
     }
