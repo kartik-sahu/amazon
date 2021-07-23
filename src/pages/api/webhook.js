@@ -41,18 +41,14 @@ export default async (req, res) => {
     if (req.method === "POST") {
         const requestBuffer = await buffer(req);
         const payload = req.rawBody;
-        const sig = req.headers["stripe-signature"];
+        const sig = req.headers['stripe-signature'];
 
         let event;
         // Verify that the EVENT posted came from stripe :
         // https://stripe.com/docs/connect/webhooks
 
         try {
-            event = stripe.webhooks.constructEvent(
-                payload,
-                sig,
-                endpointSecret
-            );
+            const event = stripe.webhooks.constructEvent(req.rawBody, sig, endpointSecret);
         } catch (err) {
             console.log("ERROR", err.message);
             return res.status(400).send(`Webhook error: ${err.message}`);
